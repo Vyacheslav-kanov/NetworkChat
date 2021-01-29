@@ -14,12 +14,13 @@ public class ThreadMessagesListener extends Thread {
         try (DataInputStream in = new DataInputStream(clientSocket.getInputStream())) {
             while (!clientSocket.isClosed()) {
                 String mess = in.readUTF();
-                System.out.println(mess);
-                Client.loger(mess);
+                Client.logger(mess);
             }
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Поток чтения сообщений завершил работу!");
+            try {
+                Client.logger("Поток чтения сообщений завершил работу!");
+            } catch (IOException ignore) {}
         }
     }
 }

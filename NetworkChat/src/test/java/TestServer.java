@@ -14,7 +14,7 @@ public class TestServer {
     @Test
     public void testLog(){
         try {
-            Server.loger("Test");
+            Server.logger("Test");
             String mess = readFile("ServerTmp\\chatLog.txt");
 
             Assertions.assertEquals(mess, "Test");
@@ -25,11 +25,15 @@ public class TestServer {
 
     @Test
     public  void testChatHistory(){
-        Server.saveMessage("Test");
-        Assertions.assertEquals(Server.getChatHistory(), "Test");
+        try {
+            Server.saveMessage("Test");
+            Assertions.assertEquals(Server.getChatHistory(), "Test");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private static String readFile(String filePath) throws IOException {
+    private String readFile(String filePath) throws IOException {
         int i;
         String mess = "";
         FileReader reader = new FileReader(filePath);
@@ -37,5 +41,13 @@ public class TestServer {
             mess += String.valueOf((char)i);
         }
         return mess;
+    }
+
+    @Test
+    public void testConnectingToServer(){
+        Server server = new Server();
+        server.start();
+        new MockClient().start();
+        server.interrupt();
     }
 }

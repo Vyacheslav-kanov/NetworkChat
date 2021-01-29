@@ -5,24 +5,26 @@ import java.time.format.DateTimeFormatter;
 
 public class ServerService implements Runnable {
 
-    private static DataInputStream in;
-    private static DataOutputStream out;
+    private DataInputStream in;
+    private DataOutputStream out;
 
     private Socket socket;
 
     private String clientName;
 
     public ServerService(Socket client) {
-        this.socket = client;
+        try {
+            this.socket = client;
+            in = new DataInputStream(socket.getInputStream());
+            out = new DataOutputStream(socket.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void run() {
         try{
-            System.out.println(socket);
-            in = new DataInputStream(socket.getInputStream());
-            out = new DataOutputStream(socket.getOutputStream());
-
             clientName = getClientName();//Записываем имя пользователя.
             sendingHistoricalMessages();//Отправляем пользователю в ответ историю переписки.
 
@@ -33,10 +35,7 @@ public class ServerService implements Runnable {
              * В конце выполнения потока разошлем полседнее сообщение,
              * что пользователь покинул чат, закроем потоки и сокет.
              */
-            String report = clientName + " присоединился к чату!";
-            System.out.println(report);
-            Server.loger(report);
-            send(report);
+            send(clientName + " присоединился к чату!");
 
             String mess;
             while (!socket.isClosed()) {
@@ -49,7 +48,7 @@ public class ServerService implements Runnable {
         } finally {
             try {
                 send(clientName + " покинул чат!");
-                Server.loger(clientName + " покинул чат!");
+                Server.logger(clientName + " покинул чат!");
 
                 in.close();
                 out.flush();
@@ -77,7 +76,7 @@ public class ServerService implements Runnable {
             sender.writeUTF(message);
             sender.flush();
         }
-        Server.loger(message);
+        Server.logger(message);
         Server.saveMessage(message);
     }
 
@@ -98,10 +97,9 @@ public class ServerService implements Runnable {
      * @return
      * @throws IOException
      */
-    private static String getClientName() throws IOException {
+    private String getClientName() throws IOException {
         String report = "Жду имени пользователя";
-        System.out.println(report);
-        Server.loger(report);
+        Server.logger(report);
         final String clientName = in.readUTF();
         out.writeUTF(clientName + " Добро пожаловать!");
         out.flush();
@@ -113,8 +111,8 @@ public class ServerService implements Runnable {
      * Также отправляет отчет в лог.
      * @throws IOException
      */
-    private static void sendingHistoricalMessages() throws IOException {
-        Server.loger("Отправка истории сообщений...");
+    private void sendingHistoricalMessages() throws IOException {
+        Server.logger("Отправка истории сообщений...");
         out.writeUTF(Server.getChatHistory());
         out.flush();
     }

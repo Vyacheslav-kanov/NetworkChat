@@ -1,14 +1,29 @@
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
-import static java.lang.System.out;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class Client extends Thread {
 
-    private static final int port = getPort("ClientTmp\\settings.txt");
-    private static final String ip = getIp("ClientTmp\\settings.txt");
-    private static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    private static final int port = getPort("ClientTmp/settings.txt");
+    private static final String ip = getIp("ClientTmp/settings.txt");
+    private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+    private DataOutputStream out;
+    private DataInputStream in;
+    private Socket socket;
+
+    public Client() {
+        try {
+            this.socket = new Socket(ip, port);
+            this.out = new DataOutputStream(socket.getOutputStream());
+            this.in = new DataInputStream((socket.getInputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void main(String[] args) {
         new Client().start();
@@ -17,22 +32,13 @@ public class Client extends Thread {
     @Override
     public void run() {
         try {
-            Socket socket = new Socket(ip, port);
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-
-            String report; //Создал переменную, чтобы не повторять одну и туже строку в коде.
             String userName = "NoName";
-
-            report = "Введите имя пользователя";
-            System.out.println(report);
+            String response; //Ответ сервера
+            logger("Введите имя пользователя");
             userName = reader.readLine();
-            loger(report);
 
-            report = "Попытка подключения к серверу...";
-            System.out.println(report);
-            loger(report);
-
-            String serverAnswer; //Ответ сервера
+            System.out.println();
+            logger("Попытка подключения к серверу...");
 
             /**
              * Отправляем серверу имя пользователя на которое должны получить ответ
@@ -40,21 +46,18 @@ public class Client extends Thread {
              * Если ответ получили значит диалог установлен.
              */
             out.writeUTF(userName);
-            report = "\nЖдем ответ сервера...";
-            System.out.println(report);
-            loger(report); //Каждый процесс записываем в лог.
-            serverAnswer = listenAnswerServer(socket);  //Ждем пока не получим ответ.
-            System.out.println(serverAnswer);
+            System.out.println();
+            logger("Ждем ответ сервера..."); //Каждый процесс записываем в лог.
+            response = listenAnswerServer();  //Ждем пока не получим ответ.
+            logger(response);
 
-            report = "\nПолучение сообщений..."; //Получаем историю сообщений.
-            System.out.println(report);
-            loger(report);
-            serverAnswer = listenAnswerServer(socket); //Ждем пока сервер отправит историю.
-            System.out.println(serverAnswer);
+            System.out.println();
+            logger("Получение сообщений...");
+            response = listenAnswerServer(); //Ждем пока сервер отправит историю.
+            logger(response);
 
-            report = "\nВводите сообщения:";
-            System.out.println(report);
-            loger(report);
+            System.out.println();
+            logger("Вводите сообщения:");
 
             /**
              * Создаем поток чтения, который будет постоянно читать сообщения параллельно потоку клиента
@@ -62,27 +65,34 @@ public class Client extends Thread {
              * у которых поток чтения будет выполнять свою работу и читать эти сообщения для клиента.
              */
             new ThreadMessagesListener(socket).start();
-            while (!socket.isClosed()) {
-                sendingMessages(reader.readLine(), socket);
+            while (!socket.isClosed() || isInterrupted()) {
+                sendingMessages(reader.readLine());
             }
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            out.println("Вы вышли из чата");
-            out.println("Клиент прекратил работу!");
+            try {
+                in.close();
+                out.flush();
+                out.close();
+                logger("Вы вышли из чата!");
+                logger("Клиент завершил работу");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private static void sendingMessages(String mess, Socket socket) throws IOException {
-        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+    private void sendingMessages(String mess) throws IOException {
         if (mess.equals("/exit")) { //перед отправкой сообщения проверяем, евляется ли сообщение командой выхода
             socket.close();
         } else {
             out.writeUTF(mess);
             out.flush();
         }
+        logger(mess);
     }
 
     /**
@@ -93,8 +103,8 @@ public class Client extends Thread {
      * @throws IOException
      */
     private static void createFileSettings() throws IOException {
-        File clientTmp = new File("ClientTmp\\");
-        File settings = new File("ClientTmp\\settings.txt");
+        File clientTmp = new File("ClientTmp/");
+        File settings = new File("ClientTmp/settings.txt");
         if (!settings.exists()) {
             clientTmp.mkdir();
             settings.createNewFile();
@@ -111,16 +121,23 @@ public class Client extends Thread {
      */
     private static int getPort(String settingsPath) {
         File settings = new File(settingsPath);
+        int result = 00000;
         try {
             createFileSettings();
             String mess = readFile(settings.getPath());
             String[] splitBuf = mess.split(";\n");
             splitBuf = splitBuf[1].split("/port:");
-            return Integer.parseInt(splitBuf[1]);
+            result = Integer.parseInt(splitBuf[1]);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return 0;
+
+        try {
+            logger("Получен порт " + result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**
@@ -132,16 +149,23 @@ public class Client extends Thread {
      */
     private static String getIp(String settingsPath) {
         File settings = new File(settingsPath);
+        String result = "localhost";
         try {
             createFileSettings();
             String mess = readFile(settings.getPath());
             String[] splitBuf = mess.split(";\n");
             splitBuf = splitBuf[0].split("/IP:");
-            return splitBuf[1];
+            result = splitBuf[1];
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+
+        try {
+            logger("Получен адрес " + result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**
@@ -149,20 +173,24 @@ public class Client extends Thread {
      * проверяем на наличие файла логирования
      * получаем текст лога и прибовляем к нему сообщение
      * и записываем в лог
-     * @param logText
+     * @param message
      * @throws IOException
      */
-    public static synchronized void loger(String logText) throws IOException {
-        File chatLog = new File("ClientTmp\\chatLog.txt");
-        createChatLog();
-        String log = readFile(chatLog.getPath());
-        writeFile(chatLog.getPath(), log + "\n" + logText);
+    public static synchronized void logger(String message) throws IOException {
+        File chatLog = new File("ClientTmp/chatLog.txt");
+        createFileLog();
+        String log = "("
+                + LocalDate.now().format(DateTimeFormatter.ofPattern("DD.MM"))
+                + " " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")) + ") "
+                + " - " + message;
+        writeFile(chatLog.getPath(),readFile(chatLog.getPath()) + "\n" + log);
+        System.out.println(log);
     }
 
     //Создает файл логирования
-    private static void createChatLog() throws IOException {
-        File clientTmp = new File("ClientTmp\\");
-        File chatLog = new File("ClientTmp\\chatLog.txt");
+    private static void createFileLog() throws IOException {
+        File clientTmp = new File("ClientTmp/");
+        File chatLog = new File("ClientTmp/chatLog.txt");
         if (!chatLog.exists()) {
             clientTmp.mkdir();
             chatLog.createNewFile();
@@ -187,10 +215,9 @@ public class Client extends Thread {
         writer.flush();
     }
 
-    private static String listenAnswerServer(Socket socket) throws IOException {
-        DataInputStream in = new DataInputStream(socket.getInputStream());
-        String answer;
-        while((answer = in.readUTF()).isEmpty());
-        return answer;
+    private String listenAnswerServer() throws IOException {
+        String response;
+        while((response = in.readUTF()).isEmpty());
+        return response;
     }
 }
