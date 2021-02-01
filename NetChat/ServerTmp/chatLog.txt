@@ -1,0 +1,99 @@
+
+(29.01 22:15)  - Message saved
+(29.01 22:15)  - Chat received!
+(29.01 22:15)  - /logOF
+(29.01 22:15)  - ServerTmp\settings.txt created!
+(29.01 22:15)  - Получил порт 8955
+(32.02 17:42)  - Server is running
+(32.02 17:42)  - Wait connect...
+(32.02 17:43)  - Client is join!
+(32.02 17:43)  - Жду имени пользователя
+(32.02 17:48)  - Отправка истории сообщений...
+(32.02 17:48)  - Chat is empty
+(32.02 17:48)  - Slava присоединился к чату!
+(32.02 17:48)  - Message saved
+(32.02 17:52)  - Client is join!
+(32.02 17:52)  - Жду имени пользователя
+(32.02 17:52)  - Отправка истории сообщений...
+(32.02 17:52)  - Chat received!
+(32.02 17:52)  - Vasa присоединился к чату!
+(32.02 17:52)  - Message saved
+(32.02 17:52)  - (17:52) Vasa: Hi all
+(32.02 17:52)  - Message saved
+(32.02 17:52)  - (17:52) Slava: Hi Vasa
+(32.02 17:52)  - Message saved
+(32.02 17:53)  - Client is join!
+(32.02 17:53)  - Жду имени пользователя
+(32.02 17:53)  - Отправка истории сообщений...
+(32.02 17:53)  - Chat received!
+(32.02 17:53)  - Masha присоединился к чату!
+(32.02 17:53)  - Message saved
+(32.02 17:54)  - (17:54) Masha: Привет мальчики
+(32.02 17:54)  - Message saved
+(32.02 17:54)  - (17:54) Slava: Привет маш
+(32.02 17:54)  - Message saved
+(32.02 17:54)  - Client is join!
+(32.02 17:54)  - Жду имени пользователя
+(32.02 17:54)  - Отправка истории сообщений...
+(32.02 17:54)  - Chat received!
+(32.02 17:54)  - Nasty присоединился к чату!
+(32.02 17:54)  - Message saved
+(32.02 17:55)  - (17:55) Nasty: ООО всем привет
+(32.02 17:55)  - Message saved
+(32.02 17:55)  - (17:55) Nasty: Маша как дела?
+(32.02 17:55)  - Message saved
+(32.02 17:55)  - (17:55) Masha: Здарова
+(32.02 17:55)  - Message saved
+(32.02 17:55)  - (17:55) Masha: Все отлично
+(32.02 17:55)  - Message saved
+(32.02 17:55)  - (17:55) Vasa: так 
+(32.02 17:55)  - Message saved
+(32.02 17:55)  - (17:55) Vasa: ну вы общайтес 
+(32.02 17:55)  - Message saved
+(32.02 17:55)  - (17:55) Vasa: а я пошел
+(32.02 17:55)  - Message saved
+(32.02 18:34)  - Server is running
+(32.02 18:34)  - Wait connect...
+(32.02 18:34)  - Server is running
+(32.02 18:34)  - Wait connect...
+(32.02 18:36)  - Server is running
+(32.02 18:36)  - Wait connect...
+(32.02 18:36)  - Server is running
+(32.02 18:36)  - Wait connect...
+(32.02 18:36)  - Server is running
+(32.02 18:36)  - Wait connect...
+(32.02 19:01)  - Server is running
+(32.02 19:01)  - Wait connect...
+(32.02 19:02)  - Server is running
+(32.02 19:02)  - Wait connect...
+(32.02 19:03)  - Server is running
+(32.02 19:03)  - Wait connect...
+(32.02 19:04)  - Server is running
+(32.02 19:04)  - Wait connect...
+(32.02 19:06)  - Server is running
+(32.02 19:06)  - Wait connect...
+(32.02 19:07)  - Server is running
+(32.02 19:07)  - Wait connect...
+(32.02 19:09)  - Server is running
+(32.02 19:09)  - Wait connect...
+(32.02 19:12)  - Server is running
+(32.02 19:12)  - Wait connect...
+(32.02 19:14)  - ServerTmp\settings.txt created!
+(32.02 19:14)  - Get port - 0
+(32.02 19:14)  - Server is running
+(32.02 19:14)  - Wait connect...
+(32.02 19:14)  - ServerTmp\settings.txt created!
+(32.02 19:15)  - ServerTmp\settings.txt created!
+(32.02 19:15)  - Get port - 8955
+(32.02 19:15)  - Server is running
+(32.02 19:15)  - Wait connect...
+(32.02 19:19)  - Client is join!
+(32.02 19:19)  - Жду имени пользователя
+(32.02 19:19)  - null покинул чат!
+(32.02 19:19)  - Message saved
+(32.02 19:19)  - null покинул чат!
+(32.02 19:19)  - Client is join!
+(32.02 19:19)  - Жду имени пользователя
+(32.02 19:21)  - null покинул чат!
+(32.02 19:21)  - Message saved
+(32.02 19:21)  - null покинул чат!
